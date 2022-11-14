@@ -2,33 +2,17 @@ package id.melur.eskalinktest.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import id.melur.eskalinktest.database.Dummy
-import id.melur.eskalinktest.database.DummyDatabase
 import id.melur.eskalinktest.databinding.ItemDataBinding
-import id.melur.eskalinktest.model.DataItem
-import id.melur.eskalinktest.model.DataResponse
-import java.security.AccessController.getContext
 
-
-class DataAdapter(private val onClickListener : (nik: Int, data: DataItem) -> Unit) : RecyclerView.Adapter<DataAdapter.DataViewHolder>() {
-
-    private val diffCallback = object : DiffUtil.ItemCallback<DataItem>() {
-        override fun areItemsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
-            return oldItem.nik == newItem.nik
-        }
-
-        override fun areContentsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
-            return oldItem.hashCode() == newItem.hashCode()
-        }
-    }
-
-    private val listDiffer = AsyncListDiffer(this, diffCallback)
-
-    fun updateData(data: DataResponse?) = listDiffer.submitList(data?.data)
+class DataAdapter(
+    private val onDelete : (Dummy) -> Unit,
+    private val onEdit : (Dummy) -> Unit,
+    private val listener: DataActionListener
+) : ListAdapter<Dummy, DataAdapter.DataViewHolder>(DIFF_CALLBACK)  {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
         val binding = ItemDataBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -36,32 +20,48 @@ class DataAdapter(private val onClickListener : (nik: Int, data: DataItem) -> Un
     }
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
-        holder.bind(listDiffer.currentList[position])
+        val data = getItem(position)
+        holder.bind(data)
     }
 
-    override fun getItemCount(): Int = listDiffer.currentList.size
+    inner class DataViewHolder(private val binding: ItemDataBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(data: Dummy) {
+            with(binding) {
+                tvNik.text = data.nik
+                tvNama.text = data.nama
+                tvUmur.text = data.umur.toString()
+                tvKota.text = data.kota
 
-    inner class DataViewHolder(private val binding: ItemDataBinding) : RecyclerView.ViewHolder(binding.root) {
+                btnDelete.setOnClickListener {
+                    onDelete.invoke(data)
+                    listener.onDelete(data)
+                }
 
-        fun bind(item: DataItem) {
-//            val nik = item.nik
-//            val nama = item.nama
-//            val umur = item.umur
-//            val kota = item.kota
-//
-//            var mDb: DummyDatabase? = null
-//            val dummy = Dummy(null, nik, nama, umur, kota)
-////            mDb = DummyDatabase.getInstance(getContext())
-//
-//            mDb?.dummyDao()?.insertData(dummy)
-
-            binding.apply {
-//                val test = item.authorDetails
-                tvAuthor.text = item.nik
-//                tvRate.text = test.rating.toString()
-                tvDate.text = item.nama
-                tvContent.text = item.kota
+                btnEdit.setOnClickListener {
+                    onEdit.invoke(data)
+                    listener.onEdit(data)
+                }
             }
         }
     }
+
+    companion object {
+
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Dummy>() {
+            override fun areItemsTheSame(oldItem: Dummy, newItem: Dummy): Boolean {
+                return oldItem.nik == newItem.nik
+            }
+
+            override fun areContentsTheSame(oldItem: Dummy, newItem: Dummy): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+}
+
+
+interface DataActionListener {
+    fun onDelete(dummy: Dummy)
+    fun onEdit(dummy: Dummy)
 }

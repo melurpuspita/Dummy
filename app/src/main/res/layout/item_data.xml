@@ -17,20 +17,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            style="@style/Typography.Black.14"
+            android:textColor="@color/neutral03"
+            android:textSize="14sp"
             android:maxLines="2"
-            android:text="A review by "
+            android:text="NIK: "
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_author"
+            android:id="@+id/tv_nik"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             style="@style/Typography.Black.14.Bold"
             android:maxLines="2"
-            android:text="author"
+            android:text="123123"
             app:layout_constraintStart_toEndOf="@+id/tv1"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,34 +40,88 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            style="@style/Typography.Black.14"
+            android:textColor="@color/neutral03"
+            android:textSize="14sp"
             android:maxLines="2"
-            android:text="Written on "
+            android:text="Nama: "
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv1" />
 
         <TextView
-            android:id="@+id/tv_date"
+            android:id="@+id/tv_nama"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             style="@style/Typography.Black.14.Bold"
             android:maxLines="2"
-            android:text="00-00-0000"
+            android:text="Nama"
             app:layout_constraintStart_toEndOf="@+id/tv2"
-            app:layout_constraintTop_toBottomOf="@+id/tv_author" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_nik" />
 
         <TextView
-            android:id="@+id/tv_content"
-            android:layout_width="match_parent"
+            android:id="@+id/tv3"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:text="content"
-            android:layout_marginTop="16dp"
             android:textColor="@color/neutral03"
             android:textSize="14sp"
+            android:maxLines="2"
+            android:text="Umur: "
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv2" />
+
+        <TextView
+            android:id="@+id/tv_umur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            style="@style/Typography.Black.14.Bold"
+            android:maxLines="2"
+            android:text="00"
+            app:layout_constraintStart_toEndOf="@+id/tv3"
+            app:layout_constraintTop_toBottomOf="@+id/tv_nama" />
+
+        <TextView
+            android:id="@+id/tv4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:textColor="@color/neutral03"
+            android:textSize="14sp"
+            android:maxLines="2"
+            android:text="Kota: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv3" />
+
+        <TextView
+            android:id="@+id/tv_kota"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            style="@style/Typography.Black.14.Bold"
+            android:maxLines="2"
+            android:text="Kota"
+            app:layout_constraintStart_toEndOf="@+id/tv4"
+            app:layout_constraintTop_toBottomOf="@+id/tv_umur" />
+
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_baseline_delete_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/btnEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_baseline_create_24"
+            app:layout_constraintEnd_toStartOf="@+id/btnDelete"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
