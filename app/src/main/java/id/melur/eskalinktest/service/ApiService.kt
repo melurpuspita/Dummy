@@ -11,7 +11,7 @@ interface ApiService {
     }
 
     @GET("b7/datadummy.php")
-    fun getData() : DataResponse
+    suspend fun getData() : DataResponse
 
 //    @GET("movie/{movie_id}")
 //    fun getDetailMovie(

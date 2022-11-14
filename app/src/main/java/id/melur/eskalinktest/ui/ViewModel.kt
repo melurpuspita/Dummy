@@ -19,7 +19,7 @@ class ViewModel @Inject constructor(
     private val insert = MutableLiveData<Long>()
 
     fun inserData(nik: String, nama: String, umur: Int, kota: String): LiveData<Long> {
-        val user = Dummy(
+        val data = Dummy(
             nik = nik,
             nama = nama,
             umur = umur,
@@ -27,7 +27,7 @@ class ViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            insert.value = dataRepo.insert(user)
+            insert.value = dataRepo.insert(data)
         }
 
         return insert

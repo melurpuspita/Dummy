@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class DataRepo@Inject constructor(
+class DataRepo @Inject constructor(
     private val apiService: ApiService,
     private val dummyDao: DummyDao
 ) {
@@ -25,7 +25,7 @@ class DataRepo@Inject constructor(
             val movieList = movies.map { movie ->
                 movie.toDataEntity()
             }
-//            dummyDao.coba()
+            dummyDao.coba()
             dummyDao.testInsert(movieList)
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
@@ -35,8 +35,8 @@ class DataRepo@Inject constructor(
         emitSource(localData)
     }
 
-    suspend fun insert(user: Dummy): Long =
-        dummyDao.register(user)
+    suspend fun insert(data: Dummy): Long =
+        dummyDao.register(data)
 
 
 //    private val mDb = DummyDatabase.getInstance(context)
