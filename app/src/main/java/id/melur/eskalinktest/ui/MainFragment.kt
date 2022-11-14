@@ -10,30 +10,16 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import id.melur.eskalinktest.R
 import id.melur.eskalinktest.adapter.DataActionListener
 import id.melur.eskalinktest.adapter.DataAdapter
 import id.melur.eskalinktest.database.Dummy
-import id.melur.eskalinktest.database.DummyDatabase
 import id.melur.eskalinktest.databinding.FragmentMainBinding
-import id.melur.eskalinktest.model.DataItem
-import id.melur.eskalinktest.model.DataResponse
-import id.melur.eskalinktest.service.ApiService
-import id.melur.eskalinktest.service.DataClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import id.melur.eskalinktest.helper.Result
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main) {
@@ -82,8 +68,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getDataAPIButton()
         getDataFromAPI()
+        getDataButton()
         addButtonOnPressed()
     }
 
@@ -97,7 +83,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     }
 
-    private fun getDataAPIButton(){
+    private fun getDataButton(){
         binding.btnApi.setOnClickListener {
             showAlertDialog(null)
         }
@@ -106,7 +92,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun addButtonOnPressed() {
         binding.addButton.setOnClickListener {
             showDataDialog(null)
-//            val dataUsername = sharedPref.getString("username", "ini default value")
         }
     }
 
@@ -153,7 +138,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 viewModel.checkNIK(nik).observe(viewLifecycleOwner) { isExist ->
                     if (isExist) {
                         Toast.makeText(requireContext(), "NIK sudah ada", Toast.LENGTH_SHORT).show()
-//                        binding.etlEmail.requestFocus()
                     } else {
                         // tambah data baru
                         viewModel.inserData(nik, nama, umur, kota)
@@ -168,7 +152,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun showAlertDialog(dummy: Dummy?) {
-//        getData()
         val customLayout =
             LayoutInflater.from(requireContext()).inflate(R.layout.data_dialog, null, false)
 
@@ -195,7 +178,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         } else {
             btnYes.setOnClickListener {
                 getDataFromAPI()
-                Toast.makeText(requireContext(), "Data ", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
         }

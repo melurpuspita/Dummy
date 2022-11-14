@@ -2,18 +2,11 @@ package id.melur.eskalinktest.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import id.melur.eskalinktest.database.Dummy
-import id.melur.eskalinktest.database.DummyDatabase
 import id.melur.eskalinktest.databinding.ItemDataBinding
-import id.melur.eskalinktest.model.DataItem
-import id.melur.eskalinktest.model.DataResponse
-import java.security.AccessController.getContext
-
 
 class DataAdapter(
     private val onDelete : (Dummy) -> Unit,
@@ -50,8 +43,6 @@ class DataAdapter(
                     listener.onEdit(data)
                 }
             }
-
-//            itemView.setOnClickListener { listener(data) }
         }
     }
 

@@ -1,15 +1,11 @@
 package id.melur.eskalinktest.helper
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import id.melur.eskalinktest.database.Dummy
 import id.melur.eskalinktest.database.DummyDao
-import id.melur.eskalinktest.database.DummyDatabase
 import id.melur.eskalinktest.service.ApiService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DataRepo @Inject constructor(
@@ -21,12 +17,12 @@ class DataRepo @Inject constructor(
         emit(Result.Loading)
         try {
             val response = apiService.getData()
-            val movies = response.data
-            val movieList = movies.map { movie ->
-                movie.toDataEntity()
+            val dummy = response.data
+            val dummyList = dummy.map { dummy ->
+                dummy.toDataEntity()
             }
-            dummyDao.coba()
-            dummyDao.testInsert(movieList)
+            dummyDao.deleteAllData()
+            dummyDao.insertAPIData(dummyList)
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
         }
@@ -35,63 +31,16 @@ class DataRepo @Inject constructor(
         emitSource(localData)
     }
 
-    suspend fun insert(data: Dummy): Long =
-        dummyDao.register(data)
+    suspend fun insertNewData(data: Dummy): Long =
+        dummyDao.insertNewData(data)
 
     suspend fun checkNIK(nik: String): Boolean =
         dummyDao.checkNIK(nik)
 
-//    fun updateData(nik: String, nama: String, umur: Int, kota: String): Int =
-//        dummyDao.updateData(nik, nama, umur, kota)
-
     suspend fun updateData(dummy: Dummy): Int =
         dummyDao.updateData(dummy)
 
-    suspend fun deleteData1(nik: String) =
-        dummyDao.deleteData1(nik)
+    suspend fun deleteData(nik: String) =
+        dummyDao.deleteData(nik)
 
-//    private val mDb = DummyDatabase.getInstance(context)
-
-//    suspend fun getAllData() = withContext(Dispatchers.IO) {
-//        mDb?.dummyDao()?.getAllData()
-//    }
-//
-//    suspend fun updateData(nik: String, nama: String, umur: Int, kota: String) = withContext(
-//        Dispatchers.IO) {
-//        mDb?.dummyDao()?.updateData(nik, nama, umur, kota)
-//    }
-//
-//
-//    suspend fun insertData(dummy: Dummy) = withContext(Dispatchers.IO) {
-//        mDb?.dummyDao()?.insertData(dummy)
-//    }
-//
-//    suspend fun deleteData(dummy: Dummy) = withContext(Dispatchers.IO) {
-//        mDb?.dummyDao()?.deleteData(dummy)
-//    }
-//
-//    suspend fun coba() = withContext(Dispatchers.IO) {
-//        mDb?.dummyDao()?.coba()
-//    }
-
-//
-//    suspend fun insertUser(user: User) = withContext(Dispatchers.IO) {
-//        mDb?.dummyDao()?.insertUser(user)
-//    }
-//
-//    suspend fun deleteUser(user: User) = withContext(Dispatchers.IO) {
-//        mDb?.dummyDao()?.deleteUser(user)
-//    }
-//
-//    suspend fun getRegisteredUser(username: String, password: String) = withContext(Dispatchers.IO) {
-//        mDb?.dummyDao()?.getRegisteredUser(username, password)
-//    }
-//
-//    suspend fun getUser(username: String) = withContext(Dispatchers.IO) {
-//        mDb?.dummyDao()?.getUser(username)
-//    }
-//
-//    suspend fun coba(username: String) = withContext(Dispatchers.IO) {
-//        mDb?.dummyDao()?.getUser(username)
-//    }
 }

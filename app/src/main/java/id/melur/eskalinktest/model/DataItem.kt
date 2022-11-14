@@ -1,6 +1,5 @@
 package id.melur.eskalinktest.model
 
-
 import com.google.gson.annotations.SerializedName
 import id.melur.eskalinktest.database.Dummy
 

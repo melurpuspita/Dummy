@@ -11,7 +11,7 @@
         android:layout_marginTop="15dp"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:text="Ambil data dari API"
+        android:text="Perbarui data dari API"
         android:textAllCaps="false"
         android:backgroundTint="@color/pink"
         app:layout_constraintTop_toTopOf="parent"
