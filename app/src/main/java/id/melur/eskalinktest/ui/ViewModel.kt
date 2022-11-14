@@ -19,6 +19,7 @@ class ViewModel @Inject constructor(
     private val insert = MutableLiveData<Long>()
     private var isExist = MutableLiveData<Boolean>()
 
+
     fun inserData(nik: String, nama: String, umur: Int, kota: String): LiveData<Long> {
         val data = Dummy(
             nik = nik,
@@ -35,6 +36,22 @@ class ViewModel @Inject constructor(
     }
 
     fun getData() = dataRepo.getAllData()
+
+//    fun updateData(nik: String, nama: String, umur: Int, kota: String) = dataRepo.updateData(nik, nama, umur, kota)
+
+    fun updateData(dummy: Dummy) {
+        viewModelScope.launch {
+            dataRepo.updateData(dummy)
+        }
+    }
+
+//    fun deleteData(dummy: Dummy) = dataRepo.deleteData(dummy)
+
+    fun deleteData(nik: String){
+        viewModelScope.launch {
+            dataRepo.deleteData1(nik)
+        }
+    }
 
     fun checkNIK(nik: String): LiveData<Boolean> {
         viewModelScope.launch {

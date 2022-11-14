@@ -41,6 +41,15 @@ class DataRepo @Inject constructor(
     suspend fun checkNIK(nik: String): Boolean =
         dummyDao.checkNIK(nik)
 
+//    fun updateData(nik: String, nama: String, umur: Int, kota: String): Int =
+//        dummyDao.updateData(nik, nama, umur, kota)
+
+    suspend fun updateData(dummy: Dummy): Int =
+        dummyDao.updateData(dummy)
+
+    suspend fun deleteData1(nik: String) =
+        dummyDao.deleteData1(nik)
+
 //    private val mDb = DummyDatabase.getInstance(context)
 
 //    suspend fun getAllData() = withContext(Dispatchers.IO) {

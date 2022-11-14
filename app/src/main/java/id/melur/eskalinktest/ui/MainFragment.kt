@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -40,52 +41,28 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-//    private lateinit var dataAdapter: DataAdapter
-//    private lateinit var sharedPref: SharedPreferences
-//    private var movieId: Int? = 0
-
-
     private lateinit var dataAdapter: DataAdapter
-
     private val viewModel: ViewModel by viewModels()
-
-    private var mDb: DummyDatabase? = null
-
-    private val apiService : ApiService by lazy { DataClient.instance }
-//    private val viewModel: ViewModel by viewModelsFactory { ViewModel(apiService) }
-
-
-    private val observerRegister: Observer<Long> = Observer { result ->
-        when (result) {
-//            0L -> showToast(requireContext(), "Something is wrong")
-//            else -> moveToHomeActivity()
-        }
-    }
+    private val observerRegister: Observer<Long> = Observer {}
 
     private val observer: Observer<Result<List<Dummy>>> = Observer { result ->
         when (result) {
-            is Result.Loading -> {
-//                setLoadState(true)
-            }
+            is Result.Loading -> {}
             is Result.Success -> {
-//                setLoadState(false)
-                val movies = result.data
-                dataAdapter.submitList(movies)
+                val dummy = result.data
+                dataAdapter.submitList(dummy)
             }
-            is Result.Error -> {
-//                setLoadState(false)
-            }
+            is Result.Error -> {}
         }
     }
 
-
     private val action = object : DataActionListener {
         override fun onDelete(dummy: Dummy) {
-            showDataDialog(dummy)
+            showAlertDialog(dummy)
         }
 
         override fun onEdit(dummy: Dummy) {
-            showAlertDialog(dummy)
+            showDataDialog(dummy)
         }
     }
 
@@ -105,13 +82,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        test()
         getDataAPIButton()
-        getData()
+        getDataFromAPI()
         addButtonOnPressed()
     }
 
-    private fun getData() {
+    private fun getDataFromAPI() {
         viewModel.getData().observe(viewLifecycleOwner, observer)
         binding.rvData.apply {
             dataAdapter = DataAdapter({}, {}, action)
@@ -121,33 +97,20 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     }
 
-    private fun test() {
-        binding.btnTest.setOnClickListener {
-            deleteItemDb()
-        }
-    }
-
-    private fun deleteItemDb() {
-        CoroutineScope(Dispatchers.IO).launch {
-            mDb?.dummyDao()?.coba()
-        }
-    }
-
     private fun getDataAPIButton(){
         binding.btnApi.setOnClickListener {
-            showDataDialog(null)
+            showAlertDialog(null)
         }
     }
 
     private fun addButtonOnPressed() {
         binding.addButton.setOnClickListener {
-            showAlertDialog(null)
+            showDataDialog(null)
 //            val dataUsername = sharedPref.getString("username", "ini default value")
         }
     }
 
-    private fun showAlertDialog(dummy: Dummy?) {
-//        getData()
+    private fun showDataDialog(dummy: Dummy?) {
         val customLayout =
             LayoutInflater.from(requireContext()).inflate(R.layout.add_dialog, null, false)
 
@@ -174,18 +137,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         btnSave.setOnClickListener {
-            val nik = etNIK.text.toString()
             val nama = etNama.text.toString()
             val umur = etUmur.text.toString().toInt()
             val kota = etKota.text.toString()
-//            val username = dataUsername.toString()
 
             if (dummy != null) {
                 val newData = Dummy(dummy.nik, nama, umur, kota)
                 // update data yg sudah ada
-//                updateToDb(newData)
+                viewModel.updateData(newData)
+                Toast.makeText(requireContext(), "Data berhasil diperbarui", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
+
             } else {
+                val nik = etNIK.text.toString()
                 viewModel.checkNIK(nik).observe(viewLifecycleOwner) { isExist ->
                     if (isExist) {
                         Toast.makeText(requireContext(), "NIK sudah ada", Toast.LENGTH_SHORT).show()
@@ -194,15 +158,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         // tambah data baru
                         viewModel.inserData(nik, nama, umur, kota)
                             .observe(viewLifecycleOwner, observerRegister)
+                        Toast.makeText(requireContext(), "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
                     }
                 }
-                dialog.dismiss()
             }
+            dialog.dismiss()
         }
         dialog.show()
     }
 
-    private fun showDataDialog(dummy: Dummy?) {
+    private fun showAlertDialog(dummy: Dummy?) {
 //        getData()
         val customLayout =
             LayoutInflater.from(requireContext()).inflate(R.layout.data_dialog, null, false)
@@ -223,12 +188,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             tvWarn.text = "Apakah anda yakin ingin menghapus catatan"
             btnYes.setOnClickListener {
                 // hapus data
-//                deleteItemDb(dummy)
+                viewModel.deleteData(dummy.nik)
+                Toast.makeText(requireContext(), "Data berhasil dihapus", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
         } else {
             btnYes.setOnClickListener {
-                getData()
+                getDataFromAPI()
+                Toast.makeText(requireContext(), "Data ", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
         }
