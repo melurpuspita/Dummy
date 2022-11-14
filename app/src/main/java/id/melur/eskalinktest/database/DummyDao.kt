@@ -1,15 +1,19 @@
 package id.melur.eskalinktest.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import id.melur.eskalinktest.model.DataItem
 import java.nio.charset.CodingErrorAction.REPLACE
 
 @Dao
 interface DummyDao {
-    @Query("SELECT * FROM Dummy")
+    @Query("SELECT * FROM dummy")
     fun getAllData() : List<Dummy>
 //    @Query("SELECT * FROM Note")
 //    fun getAllNotes() : List<Note>
+
+    @Query("SELECT * FROM dummy")
+    fun getData(): LiveData<List<Dummy>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertData(dummy: Dummy) : Long
@@ -23,16 +27,20 @@ interface DummyDao {
 //    @Query("DROP table Dummy")
 //    fun coba(dummy: Dummy) : Int
 
-    @Query("UPDATE Dummy SET nik = :nik, nama = :nama, umur = :umur, kota = :kota WHERE nik = :nik")
+    @Query("UPDATE dummy SET nik = :nik, nama = :nama, umur = :umur, kota = :kota WHERE nik = :nik")
     fun updateData(nik: String, nama: String, umur: Int, kota: String) : Int
 
     @Delete
     fun deleteData(dummy: Dummy) : Int
 
-    @Query("DELETE FROM Dummy")
+    @Query("DELETE FROM dummy")
     suspend fun coba()
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun testInsert(data: List<Dummy>)
+    suspend fun testInsert(dummy: List<Dummy>)
+
+
+    @Insert
+    suspend fun register(dummy: Dummy): Long
 }

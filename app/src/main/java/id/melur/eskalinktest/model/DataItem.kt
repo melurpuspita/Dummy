@@ -6,18 +6,17 @@ import id.melur.eskalinktest.database.Dummy
 
 data class DataItem(
     @SerializedName("kota")
-    val kota: String,
+    val kota: String? = null,
     @SerializedName("nama")
-    val nama: String,
+    val nama: String? = null,
     @SerializedName("nik")
-    val nik: String = "0",
+    val nik: String,
     @SerializedName("umur")
-    val umur: Int
+    val umur: Int? = 0
 ) {
 
     fun toDataEntity(): Dummy =
         Dummy(
-            id = 0,
             nik = nik,
             nama = nama,
             umur = umur,

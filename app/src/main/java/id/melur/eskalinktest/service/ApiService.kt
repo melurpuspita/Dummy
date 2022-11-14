@@ -6,8 +6,12 @@ import retrofit2.http.GET
 
 interface ApiService {
 
+    companion object {
+        const val BASE_URL = "http://103.146.244.206:600/"
+    }
+
     @GET("b7/datadummy.php")
-    fun getData() : Call<DataResponse>
+    fun getData() : DataResponse
 
 //    @GET("movie/{movie_id}")
 //    fun getDetailMovie(
