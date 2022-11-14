@@ -7,7 +7,7 @@
     android:layout_margin="12dp">
 
     <TextView
-        android:id="@+id/tvDelete"
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -27,7 +27,7 @@
         android:text="Apakah anda yakin ingin mengambil data dari API?"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDelete" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <Button
         android:id="@+id/btnYes"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginStart="50dp"
-        android:text="Perbarui"
+        android:text="Ya"
         android:backgroundTint="@color/pink"
         app:layout_constraintEnd_toStartOf="@+id/btnCancel"
         app:layout_constraintHorizontal_bias="0.5"

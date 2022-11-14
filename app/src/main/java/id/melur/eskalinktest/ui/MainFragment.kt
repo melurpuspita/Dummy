@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import id.melur.eskalinktest.R
+import id.melur.eskalinktest.adapter.DataActionListener
 import id.melur.eskalinktest.adapter.DataAdapter
 import id.melur.eskalinktest.database.Dummy
 import id.melur.eskalinktest.database.DummyDatabase
@@ -44,9 +45,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 //    private var movieId: Int? = 0
 
 
-    private val dataAdapter: DataAdapter by lazy {
-        DataAdapter(::onMovieClicked)
-    }
+    private lateinit var dataAdapter: DataAdapter
 
     private val viewModel: ViewModel by viewModels()
 
@@ -79,11 +78,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
-    private fun onMovieClicked(dummy: Dummy) {
-//        view?.findNavController()
-//            ?.navigate(MovieFragmentDirections.actionMovieFragmentToDetailMovieFragment(dummy.id))
-    }
 
+    private val action = object : DataActionListener {
+        override fun onDelete(dummy: Dummy) {
+            showDataDialog(dummy)
+        }
+
+        override fun onEdit(dummy: Dummy) {
+            showAlertDialog(dummy)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -110,6 +114,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun getData() {
         viewModel.getData().observe(viewLifecycleOwner, observer)
         binding.rvData.apply {
+            dataAdapter = DataAdapter({}, {}, action)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = dataAdapter
         }
@@ -130,7 +135,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun getDataAPIButton(){
         binding.btnApi.setOnClickListener {
-            showDataDialog()
+            showDataDialog(null)
         }
     }
 
@@ -144,7 +149,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun showAlertDialog(dummy: Dummy?) {
 //        getData()
         val customLayout =
-            LayoutInflater.from(requireContext()).inflate(R.layout.data_dialog, null, false)
+            LayoutInflater.from(requireContext()).inflate(R.layout.add_dialog, null, false)
 
         val tvTitle = customLayout.findViewById<TextView>(R.id.textView2)
         val etNIK = customLayout.findViewById<EditText>(R.id.etNIK)
@@ -178,7 +183,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             if (dummy != null) {
                 val newData = Dummy(dummy.nik, nama, umur, kota)
                 // update data yg sudah ada
-                updateToDb(newData)
+//                updateToDb(newData)
                 dialog.dismiss()
             } else {
                 viewModel.checkNIK(nik).observe(viewLifecycleOwner) { isExist ->
@@ -187,7 +192,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 //                        binding.etlEmail.requestFocus()
                     } else {
                         // tambah data baru
-                        viewModel.register(username, email, password)
+                        viewModel.inserData(nik, nama, umur, kota)
                             .observe(viewLifecycleOwner, observerRegister)
                     }
                 }
@@ -197,13 +202,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         dialog.show()
     }
 
-    private fun showDataDialog() {
+    private fun showDataDialog(dummy: Dummy?) {
 //        getData()
         val customLayout =
             LayoutInflater.from(requireContext()).inflate(R.layout.data_dialog, null, false)
 
-        val btnDelete = customLayout.findViewById<Button>(R.id.btnYes)
+        val btnYes = customLayout.findViewById<Button>(R.id.btnYes)
         val btnCancel = customLayout.findViewById<Button>(R.id.btnCancel)
+        val tvTitle = customLayout.findViewById<TextView>(R.id.tvTitle)
+        val tvWarn = customLayout.findViewById<TextView>(R.id.tvWarn)
 
         val builder = AlertDialog.Builder(requireContext())
 
@@ -211,83 +218,24 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         val dialog = builder.create()
 
-        btnDelete.setOnClickListener {
-            getData()
-            dialog.dismiss()
+        if (dummy != null) {
+            tvTitle.text = "Hapus Data"
+            tvWarn.text = "Apakah anda yakin ingin menghapus catatan"
+            btnYes.setOnClickListener {
+                // hapus data
+//                deleteItemDb(dummy)
+                dialog.dismiss()
+            }
+        } else {
+            btnYes.setOnClickListener {
+                getData()
+                dialog.dismiss()
+            }
         }
 
         btnCancel.setOnClickListener {
-//            viewModel.inserData("hihihi", "nama", 12, "kota")
-//                .observe(viewLifecycleOwner, observerRegister)
-//            saveToDb("123123", "melur", 12, "beks")
             dialog.dismiss()
         }
         dialog.show()
-    }
-
-
-    private fun btnSave() {
-        binding..setOnClickListener {
-            val username = binding.etUsername.text.toString()
-            val email = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
-            val passwordConfirm = binding.etPasswordConfirm.text.toString()
-
-            if (validateData(username, email, password, passwordConfirm)) {
-                viewModel.checkEmail(email).observe(viewLifecycleOwner) { isExist ->
-                    if (isExist) {
-                        binding.etlEmail.error = "Email sudah ada"
-                        binding.etlEmail.requestFocus()
-                    } else {
-                        viewModel.register(username, email, password)
-                            .observe(viewLifecycleOwner, observerRegister)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun validateData(
-        nik: String,
-    ): Boolean {
-        return when {
-            username.isEmpty() -> {
-                binding.etlUsername.error = "Username tidak boleh kosong"
-                binding.etlUsername.requestFocus()
-                false
-            }
-            email.isEmpty() -> {
-                binding.etlEmail.error = "Email tidak boleh kosong"
-                binding.etlEmail.requestFocus()
-                false
-            }
-            !email.isValidated() -> {
-                binding.etlEmail.error = "Email tidak valid"
-                binding.etlEmail.requestFocus()
-                false
-            }
-            password.isEmpty() -> {
-                binding.etlPassword.error = "Password tidak boleh kosong"
-                binding.etlPassword.requestFocus()
-                false
-            }
-            password.length < MIN_PASSWORD_LENGTH -> {
-                binding.etlPassword.error =
-                    "Password harus lebih dari $MIN_PASSWORD_LENGTH karakter"
-                binding.etlPassword.requestFocus()
-                false
-            }
-            passwordConfirm.isEmpty() -> {
-                binding.etlPasswordConfirm.error = "Konfirmasi password tidak boleh kosong"
-                binding.etlPasswordConfirm.requestFocus()
-                false
-            }
-            passwordConfirm != password -> {
-                binding.etlPasswordConfirm.error = "Password tidak sesuai"
-                binding.etlPasswordConfirm.requestFocus()
-                false
-            }
-            else -> true
-        }
     }
 }

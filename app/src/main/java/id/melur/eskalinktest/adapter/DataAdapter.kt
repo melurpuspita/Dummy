@@ -16,7 +16,9 @@ import java.security.AccessController.getContext
 
 
 class DataAdapter(
-    private val onClick: (Dummy) -> Unit
+    private val onDelete : (Dummy) -> Unit,
+    private val onEdit : (Dummy) -> Unit,
+    private val listener: DataActionListener
 ) : ListAdapter<Dummy, DataAdapter.DataViewHolder>(DIFF_CALLBACK)  {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
@@ -37,9 +39,19 @@ class DataAdapter(
                 tvNama.text = data.nama
                 tvUmur.text = data.umur.toString()
                 tvKota.text = data.kota
+
+                btnDelete.setOnClickListener {
+                    onDelete.invoke(data)
+                    listener.onDelete(data)
+                }
+
+                btnEdit.setOnClickListener {
+                    onEdit.invoke(data)
+                    listener.onEdit(data)
+                }
             }
 
-            itemView.setOnClickListener { onClick(data) }
+//            itemView.setOnClickListener { listener(data) }
         }
     }
 
@@ -55,4 +67,10 @@ class DataAdapter(
             }
         }
     }
+}
+
+
+interface DataActionListener {
+    fun onDelete(dummy: Dummy)
+    fun onEdit(dummy: Dummy)
 }

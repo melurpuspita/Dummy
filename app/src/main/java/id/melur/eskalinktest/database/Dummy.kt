@@ -9,9 +9,9 @@ import androidx.room.PrimaryKey
 data class Dummy(
     @PrimaryKey
     @ColumnInfo(name = "nik") var nik: String,
-    @ColumnInfo(name = "nama") var nama: String? = null,
-    @ColumnInfo(name = "umur") var umur: Int? = 0,
-    @ColumnInfo(name = "kota") var kota: String? = null
+    @ColumnInfo(name = "nama") var nama: String,
+    @ColumnInfo(name = "umur") var umur: Int,
+    @ColumnInfo(name = "kota") var kota: String
 
 //    @PrimaryKey
 //    @ColumnInfo(name = "id")
