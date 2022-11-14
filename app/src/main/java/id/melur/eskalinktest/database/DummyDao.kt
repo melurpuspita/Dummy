@@ -27,6 +27,10 @@ interface DummyDao {
 //    @Query("DROP table Dummy")
 //    fun coba(dummy: Dummy) : Int
 
+    @Query("SELECT EXISTS(SELECT * FROM dummy WHERE nik = :nik)")
+    suspend fun checkNIK(nik: String): Boolean
+
+
     @Query("UPDATE dummy SET nik = :nik, nama = :nama, umur = :umur, kota = :kota WHERE nik = :nik")
     fun updateData(nik: String, nama: String, umur: Int, kota: String) : Int
 

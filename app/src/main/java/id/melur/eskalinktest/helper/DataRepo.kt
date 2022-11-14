@@ -38,6 +38,8 @@ class DataRepo @Inject constructor(
     suspend fun insert(data: Dummy): Long =
         dummyDao.register(data)
 
+    suspend fun checkNIK(nik: String): Boolean =
+        dummyDao.checkNIK(nik)
 
 //    private val mDb = DummyDatabase.getInstance(context)
 

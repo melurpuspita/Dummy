@@ -17,6 +17,7 @@ class ViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val insert = MutableLiveData<Long>()
+    private var isExist = MutableLiveData<Boolean>()
 
     fun inserData(nik: String, nama: String, umur: Int, kota: String): LiveData<Long> {
         val data = Dummy(
@@ -35,29 +36,11 @@ class ViewModel @Inject constructor(
 
     fun getData() = dataRepo.getAllData()
 
-    // Get data dari database room
-    fun deleteAllData() {
-        // viewmodel scope penggunaannya mirip coroutinescope
+    fun checkNIK(nik: String): LiveData<Boolean> {
         viewModelScope.launch {
-//            dataRepo.coba()
+            isExist.value = dataRepo.checkNIK(nik)
         }
-    }
 
-        fun saveToDb(nik: String, nama: String, umur: Int, kota: String) {
-            viewModelScope.launch {
-                val dummy = Dummy(nik, nama, umur,kota)
-//                dataRepo.insertData(dummy)
-//                val result = mDb?.dummyDao()?.insertData(dummy)
-//            mDb?.dummyDao()?.getAllData()
-//            if (result != 0L) {
-//                CoroutineScope(Dispatchers.Main).launch {
-//                    Toast.makeText(requireContext(), "Berhasil Registrasi", Toast.LENGTH_SHORT).show()
-//                }
-//            } else {
-//                CoroutineScope(Dispatchers.Main).launch {
-//                    Toast.makeText(requireContext(), "Gagal Registrasi", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-        }
+        return isExist
     }
 }

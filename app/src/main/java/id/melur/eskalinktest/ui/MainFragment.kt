@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
@@ -99,16 +101,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-//        getReview(436270)
-//        getData()
-//        mDb = DummyDatabase.getInstance(requireContext())
-
         test()
         getDataAPIButton()
-//        initRecyclerView()
         getData()
+        addButtonOnPressed()
     }
 
     private fun getData() {
@@ -122,101 +118,91 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun test() {
         binding.btnTest.setOnClickListener {
-//            saveToDb("123123", "melur", 12, "beks")
-//            mDb?.dummyDao().insertData()
             deleteItemDb()
         }
     }
 
-//    private fun saveToDb(nik: String, nama: String, umur: Int, kota: String) {
-//        val dummy = Dummy(null, nik, nama, umur,kota)
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val result = mDb?.dummyDao()?.insertData(dummy)
-//            mDb?.dummyDao()?.getAllData()
-//            if (result != 0L) {
-//                CoroutineScope(Dispatchers.Main).launch {
-//                    Toast.makeText(requireContext(), "Berhasil Registrasi", Toast.LENGTH_SHORT).show()
-//                }
-//            } else {
-//                CoroutineScope(Dispatchers.Main).launch {
-//                    Toast.makeText(requireContext(), "Gagal Registrasi", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//        }
-//    }
     private fun deleteItemDb() {
         CoroutineScope(Dispatchers.IO).launch {
             mDb?.dummyDao()?.coba()
-//            if (result != 0) {
-//                getDataFromDb()
-//                CoroutineScope(Dispatchers.Main).launch {
-//                    Toast.makeText(requireContext(), "Berhasil Dihapus", Toast.LENGTH_SHORT).show()
-//                }
-//            } else {
-//                CoroutineScope(Dispatchers.Main).launch {
-//                    Toast.makeText(requireContext(), "Gagal Dihapus", Toast.LENGTH_SHORT).show()
-//                }
-//            }
         }
     }
+
     private fun getDataAPIButton(){
         binding.btnApi.setOnClickListener {
-//            deleteItemDb()
             showDataDialog()
         }
     }
 
-//    private fun initRecyclerView() {
-//        dataAdapter = DataAdapter { _, data: DataItem ->
-//
-//            val nik = data.nik
-//            val nama = data.nama
-//            val umur = data.umur
-//            val kota = data.kota
-//
-////            mDb = DummyDatabase.getInstance(requireContext())
-//
-//            val dummy = Dummy(null, nik, nama, umur, kota)
-//
-//            mDb?.dummyDao()?.insertData(dummy)
-////            val bundle = Bundle()
-////            bundle.putInt("nik", nik)
-////            findNavController().navigate(R.id.action_mainScreen_to_infoScreen, bundle)
-//        }
-//        binding.rvData.apply {
-//            adapter = dataAdapter
-//            layoutManager = LinearLayoutManager(requireContext())
-//        }
-//    }
+    private fun addButtonOnPressed() {
+        binding.addButton.setOnClickListener {
+            showAlertDialog(null)
+//            val dataUsername = sharedPref.getString("username", "ini default value")
+        }
+    }
 
-//    fun getData(){
-//        apiService.getData()
-//            .enqueue(object : Callback<DataResponse> {
-//                override fun onResponse(
-//                    call: Call<DataResponse>,
-//                    response: Response<DataResponse>
-//                ) {
-//                    if (response.isSuccessful) {
-//                        if (response.body() != null) {
-//                            dataAdapter.updateData(response.body()!!)
-//                        }
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<DataResponse>, t: Throwable) {
-//                    Toast.makeText(requireContext(), t.toString(), Toast.LENGTH_SHORT).show()
-//                }
-//            })
-//    }
+    private fun showAlertDialog(dummy: Dummy?) {
+//        getData()
+        val customLayout =
+            LayoutInflater.from(requireContext()).inflate(R.layout.data_dialog, null, false)
 
+        val tvTitle = customLayout.findViewById<TextView>(R.id.textView2)
+        val etNIK = customLayout.findViewById<EditText>(R.id.etNIK)
+        val etNama = customLayout.findViewById<EditText>(R.id.etNama)
+        val etUmur = customLayout.findViewById<EditText>(R.id.etUmur)
+        val etKota = customLayout.findViewById<EditText>(R.id.etKota)
+        val btnSave = customLayout.findViewById<Button>(R.id.btnSave)
 
+        val builder = AlertDialog.Builder(requireContext())
+
+        builder.setView(customLayout)
+
+        val dialog = builder.create()
+
+        if (dummy != null) {
+            tvTitle.text = "Ubah Data"
+            etNIK.setText(dummy.nik)
+            etNama.setText(dummy.nama)
+            etUmur.setText(dummy.umur.toString())
+            etKota.setText(dummy.kota)
+
+        }
+
+        btnSave.setOnClickListener {
+            val nik = etNIK.text.toString()
+            val nama = etNama.text.toString()
+            val umur = etUmur.text.toString().toInt()
+            val kota = etKota.text.toString()
+//            val username = dataUsername.toString()
+
+            if (dummy != null) {
+                val newData = Dummy(dummy.nik, nama, umur, kota)
+                // update data yg sudah ada
+                updateToDb(newData)
+                dialog.dismiss()
+            } else {
+                viewModel.checkNIK(nik).observe(viewLifecycleOwner) { isExist ->
+                    if (isExist) {
+                        Toast.makeText(requireContext(), "NIK sudah ada", Toast.LENGTH_SHORT).show()
+//                        binding.etlEmail.requestFocus()
+                    } else {
+                        // tambah data baru
+                        viewModel.register(username, email, password)
+                            .observe(viewLifecycleOwner, observerRegister)
+                    }
+                }
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
 
     private fun showDataDialog() {
 //        getData()
         val customLayout =
             LayoutInflater.from(requireContext()).inflate(R.layout.data_dialog, null, false)
 
-        val btnDelete = customLayout.findViewById<Button>(R.id.btnDelete1)
+        val btnDelete = customLayout.findViewById<Button>(R.id.btnYes)
         val btnCancel = customLayout.findViewById<Button>(R.id.btnCancel)
 
         val builder = AlertDialog.Builder(requireContext())
@@ -231,11 +217,77 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         btnCancel.setOnClickListener {
-            viewModel.inserData("nik", "nama", 12, "kota")
-                .observe(viewLifecycleOwner, observerRegister)
+//            viewModel.inserData("hihihi", "nama", 12, "kota")
+//                .observe(viewLifecycleOwner, observerRegister)
 //            saveToDb("123123", "melur", 12, "beks")
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+
+    private fun btnSave() {
+        binding..setOnClickListener {
+            val username = binding.etUsername.text.toString()
+            val email = binding.etEmail.text.toString()
+            val password = binding.etPassword.text.toString()
+            val passwordConfirm = binding.etPasswordConfirm.text.toString()
+
+            if (validateData(username, email, password, passwordConfirm)) {
+                viewModel.checkEmail(email).observe(viewLifecycleOwner) { isExist ->
+                    if (isExist) {
+                        binding.etlEmail.error = "Email sudah ada"
+                        binding.etlEmail.requestFocus()
+                    } else {
+                        viewModel.register(username, email, password)
+                            .observe(viewLifecycleOwner, observerRegister)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun validateData(
+        nik: String,
+    ): Boolean {
+        return when {
+            username.isEmpty() -> {
+                binding.etlUsername.error = "Username tidak boleh kosong"
+                binding.etlUsername.requestFocus()
+                false
+            }
+            email.isEmpty() -> {
+                binding.etlEmail.error = "Email tidak boleh kosong"
+                binding.etlEmail.requestFocus()
+                false
+            }
+            !email.isValidated() -> {
+                binding.etlEmail.error = "Email tidak valid"
+                binding.etlEmail.requestFocus()
+                false
+            }
+            password.isEmpty() -> {
+                binding.etlPassword.error = "Password tidak boleh kosong"
+                binding.etlPassword.requestFocus()
+                false
+            }
+            password.length < MIN_PASSWORD_LENGTH -> {
+                binding.etlPassword.error =
+                    "Password harus lebih dari $MIN_PASSWORD_LENGTH karakter"
+                binding.etlPassword.requestFocus()
+                false
+            }
+            passwordConfirm.isEmpty() -> {
+                binding.etlPasswordConfirm.error = "Konfirmasi password tidak boleh kosong"
+                binding.etlPasswordConfirm.requestFocus()
+                false
+            }
+            passwordConfirm != password -> {
+                binding.etlPasswordConfirm.error = "Password tidak sesuai"
+                binding.etlPasswordConfirm.requestFocus()
+                false
+            }
+            else -> true
+        }
     }
 }

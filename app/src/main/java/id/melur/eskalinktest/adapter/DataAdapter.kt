@@ -25,20 +25,21 @@ class DataAdapter(
     }
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
-        val movie = getItem(position)
-        holder.bind(movie)
+        val data = getItem(position)
+        holder.bind(data)
     }
 
     inner class DataViewHolder(private val binding: ItemDataBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Dummy) {
+        fun bind(data: Dummy) {
             with(binding) {
-                tvAuthor.text = movie.nik
-                tvDate.text = movie.nama
-                tvContent.text = movie.kota
+                tvNik.text = data.nik
+                tvNama.text = data.nama
+                tvUmur.text = data.umur.toString()
+                tvKota.text = data.kota
             }
 
-            itemView.setOnClickListener { onClick(movie) }
+            itemView.setOnClickListener { onClick(data) }
         }
     }
 

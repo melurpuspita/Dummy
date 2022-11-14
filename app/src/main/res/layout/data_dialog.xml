@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="hapus_data"
+        android:text="Perbarui Data"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -24,18 +24,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="apakah_anda_yakin_ingin_menghapus_catatan"
+        android:text="Apakah anda yakin ingin mengambil data dari API?"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDelete" />
 
     <Button
-        android:id="@+id/btnDelete1"
+        android:id="@+id/btnYes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginStart="50dp"
-        android:text="hapus"
+        android:text="Perbarui"
         android:backgroundTint="@color/pink"
         app:layout_constraintEnd_toStartOf="@+id/btnCancel"
         app:layout_constraintHorizontal_bias="0.5"
@@ -48,11 +48,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="50dp"
         android:layout_marginTop="15dp"
-        android:text="cancel"
+        android:text="Batal"
         android:backgroundTint="@color/pink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btnDelete1"
+        app:layout_constraintStart_toEndOf="@+id/btnYes"
         app:layout_constraintTop_toBottomOf="@+id/tvWarn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
